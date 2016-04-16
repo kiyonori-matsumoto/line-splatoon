@@ -1,0 +1,23 @@
+{
+  "name": "LINE splatoon",
+  "description": "Echo server for LINE BOT API",
+  "repository": "https://github.com/kiyonori-matsumoto/line-splatoon",
+  "keywords": ["line", "bot"],
+  "env": {
+    "LINE_CHANNEL_ID": {
+      "description": "Channel ID",
+      "required": true
+    },
+    "LINE_CHANNEL_SECRET": {
+      "description": "Channel secret",
+      "required": true
+    },
+    "LINE_CHANNEL_MID": {
+      "description": "Channel MID",
+      "required": true
+    }
+  },
+  "addons": [
+    "fixie:tricycle"
+  ]
+}

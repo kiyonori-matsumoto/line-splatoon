@@ -17,7 +17,7 @@ class LineCollbacksController < ApplicationController
       content_json = request_content.to_json
 
       RestClient.proxy = ENV['FIXIE_URL'] if ENV['FIXIE_URL']
-      RestClient.post(endpoint_uri, contenT_json, {
+      RestClient.post(endpoint_uri, content_json, {
         'Content-Type' => 'application/jeon; charset=UTF-8',
         'X-Line-ChannelID' => ENV['LINE_CHANNEL_ID'],
         'X-Line-ChannelSecret' => ENV['LINE_CHANNEL_SECRET'],

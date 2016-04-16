@@ -8,7 +8,7 @@ class LineCollbacksController < ApplicationController
     params['result'].each do |msg|
       request_content = {
         to: [msg['content']['from']],
-        to_Channel: 1383378250, #fixed valule
+        toChannel: 1383378250, #fixed valule
         eventType: '138311608800106203',
         content: msg['content']
       }

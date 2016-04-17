@@ -30,7 +30,7 @@ class LineCollbacksController < ApplicationController
 
     string = "ナワバリバトル:\n #{regular_stages[0][0]}:勝率 #{'%0.1f' % regular_stages[0][1]}%\n #{regular_stages[1][0]}:勝率 #{'%0.1f' % regular_stages[1][1]}%\n" \
     "#{rank_mode}:\n #{rank_stages[0][0]}: 勝率 #{'%0.1f' % rank_stages[0][1]}%\n #{rank_stages[1][0]}: 勝率 #{'%0.1f' % rank_stages[1][1]}%"
-    p string
+
     params['result'].each do |msg|
       request_content = {
         to: [msg['content']['from']],

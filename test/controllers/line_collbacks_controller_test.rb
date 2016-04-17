@@ -11,6 +11,7 @@ class LineCollbacksControllerTest < ActionController::TestCase
 
     stub_request(:get, 'http://splatapi.ovh/schedule_jp.json')
       .to_return(body: '{"festival": false, "schedule": [{"stages": {"ranked": [{"nameEN": "Port Mackarel", "name": "ホッケふ頭"}, {"nameEN": "Flounder Heights", "name": "ヒラメが丘団地"}], "regular": [{"nameEN": "Kelp Dome", "name": "モズク農園"}, {"nameEN": "Hammerhead Bridge", "name": "マサバ海峡大橋"}]}, "begin": "2016-04-17T15:00:00.000+09:00", "end": "2016-04-17T19:00:00.000+09:00", "ranked_modeEN": "Rainmaker", "ranked_mode": "ガチホコ"}, {"stages": {"ranked": [{"nameEN": "Hammerhead Bridge", "name": "マサバ海峡大橋"}, {"nameEN": "Mahi-Mahi Resort", "name": "マヒマヒリゾート＆スパ"}], "regular": [{"nameEN": "Walleye Warehouse", "name": "ハコフグ倉庫"}, {"nameEN": "Piranha Pit", "name": "ショッツル鉱山"}]}, "begin": "2016-04-17T19:00:00.000+09:00", "end": "2016-04-17T23:00:00.000+09:00", "ranked_modeEN": "Splat Zones", "ranked_mode": "ガチエリア"}, {"stages": {"ranked": [{"nameEN": "Blackbelly Skatepark", "name": "Ｂバスパーク"}, {"nameEN": "Ancho-V Games", "name": "アンチョビットゲームズ"}], "regular": [{"nameEN": "Arowana Mall", "name": "アロワナモール"}, {"nameEN": "Mahi-Mahi Resort", "name": "マヒマヒリゾート＆スパ"}]}, "begin": "2016-04-17T23:00:00.000+09:00", "end": "2016-04-18T03:00:00.000+09:00", "ranked_modeEN": "Tower Control", "ranked_mode": "ガチヤグラ"}]}')
+    WebMock.allow_net_connect!
   end
 
   test 'should respond to callback' do

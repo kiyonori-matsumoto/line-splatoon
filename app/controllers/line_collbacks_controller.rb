@@ -1,6 +1,7 @@
 require 'json'
 require 'rest-client'
 require 'open-uri'
+require 'nokogiri'
 
 class LineCollbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
@@ -14,9 +15,22 @@ class LineCollbacksController < ApplicationController
     rank_stages = get_stages('ranked')
     rank_mode = @stage_json['schedule'][0]['ranked_mode']
 
-    string = "ナワバリバトル:\n #{regular_stages[0]}, #{regular_stages[1]}\n" \
-      "#{rank_mode}:\n #{rank_stages[0]}, #{rank_stages[1]}"
+    doc = Nokogiri::HTML(open('https://stat.ink/u/matsumoto/stat/by-map'))
+    stage_stat = JSON.parse doc.css('#stat').attribute('data-json').value
 
+    regular_stages.map! do |stg|
+      s = stage_stat.values.find { |e| e['name'][2..3] == stg[2..3] }
+      [stg, s['win'].to_f / (s['win'].to_i + s['lose'].to_i) * 100]
+    end
+
+    rank_stages.map! do |stg|
+      s = stage_stat.values.find { |e| e['name'][2..3] == stg[2..3] }
+      [stg, s['win'].to_f / (s['win'].to_i + s['lose'].to_i) * 100]
+    end
+
+    string = "ナワバリバトル:\n #{regular_stages[0][0]}:勝率 #{'%0.1f' % regular_stages[0][1]}%\n #{regular_stages[1][0]}:勝率 #{'%0.1f' % regular_stages[1][1]}%\n" \
+    "#{rank_mode}:\n #{rank_stages[0][0]}: 勝率 #{'%0.1f' % rank_stages[0][1]}%\n #{rank_stages[1][0]}: 勝率 #{'%0.1f' % rank_stages[1][1]}%"
+    p string
     params['result'].each do |msg|
       request_content = {
         to: [msg['content']['from']],

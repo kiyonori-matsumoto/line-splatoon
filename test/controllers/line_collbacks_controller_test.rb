@@ -43,6 +43,10 @@ class LineCollbacksControllerTest < ActionController::TestCase
                      times: 1) do |req|
       req.body =~ /ヒラメが丘団地/
       req.body =~ /ホッケふ頭/
+      req.body =~ /ナワバリバトル/
+      req.body =~ /ガチホコ/
+      req.body =~ /モズク農園/
+      req.body =~ /マサバ海峡大橋/
     end
   end
 

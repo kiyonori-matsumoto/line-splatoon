@@ -6,14 +6,16 @@ class LineCollbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def callback
-    stage_json = nil
+    @stage_json = nil
     open('http://splatapi.ovh/schedule_jp.json') do |fp|
-      stage_json = JSON.load(fp)
+      @stage_json = JSON.load(fp)
     end
-    rank_stages = stage_json['schedule'][0]['stages']['ranked']
-                  .map { |e| e['name'] }
+    regular_stages = get_stages('regular')
+    rank_stages = get_stages('ranked')
+    rank_mode = @stage_json['schedule'][0]['ranked_mode']
 
-    string = "今のステージは#{rank_stages[0]}と#{rank_stages[1]}じゃなイカ!?"
+    string = "ナワバリバトル:\n #{regular_stages[0]}, #{regular_stages[1]}\n" \
+      "#{rank_mode}:\n #{rank_stages[0]}, #{rank_stages[1]}"
 
     params['result'].each do |msg|
       request_content = {
@@ -36,5 +38,11 @@ class LineCollbacksController < ApplicationController
                       'X-Line-Trusted-User-With-ACL' => ENV['LINE_CHANNEL_MID'])
     end
     render text: 'OK'
+  end
+
+  private
+
+  def get_stages(mode)
+    @stage_json['schedule'][0]['stages'][mode].map { |e| e['name'] }
   end
 end

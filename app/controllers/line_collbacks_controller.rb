@@ -1,29 +1,40 @@
 require 'json'
 require 'rest-client'
+require 'open-uri'
 
 class LineCollbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def callback
+    stage_json = nil
+    open('http://splatapi.ovh/schedule_jp.json') do |fp|
+      stage_json = JSON.load(fp)
+    end
+    rank_stages = stage_json['schedule'][0]['stages']['ranked']
+                  .map { |e| e['name'] }
+
+    string = "今のステージは#{rank_stages[0]}と#{rank_stages[1]}じゃなイカ!?"
+
     params['result'].each do |msg|
       request_content = {
         to: [msg['content']['from']],
-        toChannel: 1383378250, #fixed valule
+        toChannel: 1_383_378_250, # fixed valule
         eventType: '138311608800106203',
         content: msg['content']
       }
+
+      request_content[:content][:text] = string
 
       endpoint_uri = 'https://trialbot-api.line.me/v1/events'
       content_json = request_content.to_json
 
       RestClient.proxy = ENV['FIXIE_URL'] if ENV['FIXIE_URL']
-      RestClient.post(endpoint_uri, content_json, {
-        'Content-Type' => 'application/json; charset=UTF-8',
-        'X-Line-ChannelID' => ENV['LINE_CHANNEL_ID'],
-        'X-Line-ChannelSecret' => ENV['LINE_CHANNEL_SECRET'],
-        'X-Line-Trusted-User-With-ACL' => ENV['LINE_CHANNEL_MID']
-      })
+      RestClient.post(endpoint_uri, content_json,
+                      'Content-Type' => 'application/json; charset=UTF-8',
+                      'X-Line-ChannelID' => ENV['LINE_CHANNEL_ID'],
+                      'X-Line-ChannelSecret' => ENV['LINE_CHANNEL_SECRET'],
+                      'X-Line-Trusted-User-With-ACL' => ENV['LINE_CHANNEL_MID'])
     end
-    "OK"
+    render text: 'OK'
   end
 end

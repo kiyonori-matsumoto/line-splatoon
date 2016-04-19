@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+sample1:
+  line_uid: "uff2aec188e58752ee1fb0f9507c6529a"
+  line_name: "サンプル"
+
+sample2:
+  line_uid: "u2ddf2eb3c959e561f6c9fa2ea732e7eb9"
+  line_name: "あめんぼ"

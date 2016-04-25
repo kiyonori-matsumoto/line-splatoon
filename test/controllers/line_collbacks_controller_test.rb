@@ -42,23 +42,24 @@ class LineCollbacksControllerTest < ActionController::TestCase
         "text":"Hello, BOT API Server!"
       }
     }]}'
-
-    post :callback, JSON.parse(example_data)
+    assert_no_difference('User.count') do
+      post :callback, JSON.parse(example_data)
+    end
     assert_response :success
     assert_requested(:post, 'https://trialbot-api.line.me/v1/events',
                      headers: { 'Content-Type' => 'application/json; charset=UTF-8' },
                      times: 1) do |req|
-      req.body =~ /ヒラメが丘団地/
-      req.body =~ /ホッケふ頭/
-      req.body =~ /ナワバリバトル/
-      req.body =~ /ガチホコ/
-      req.body =~ /モズク農園/
-      req.body =~ /マサバ海峡大橋/
-      req.body =~ /57\.0\%/
-      req.body =~ /61\.8\%/
-      req.body =~ /59\.0\%/
-      req.body =~ /55\.7\%/
-      req.body =~ /サンプル/
+      req.body =~ /ヒラメが丘団地/ &&
+        req.body =~ /ホッケふ頭/ &&
+        req.body =~ /ナワバリバトル/ &&
+        req.body =~ /ガチホコ/ &&
+        req.body =~ /モズク農園/ &&
+        req.body =~ /マサバ海峡大橋/ &&
+        req.body =~ /57\.0\%/ &&
+        req.body =~ /61\.8\%/ &&
+        req.body =~ /59\.0\%/ &&
+        req.body =~ /55\.7\%/ &&
+        req.body =~ /サンプル/
     end
   end
 
@@ -92,17 +93,41 @@ class LineCollbacksControllerTest < ActionController::TestCase
     assert_requested(:post, 'https://trialbot-api.line.me/v1/events',
                      headers: { 'Content-Type' => 'application/json; charset=UTF-8' },
                      times: 1) do |req|
-      req.body =~ /ヒラメが丘団地/
-      req.body =~ /ホッケふ頭/
-      req.body =~ /ナワバリバトル/
-      req.body =~ /ガチホコ/
-      req.body =~ /モズク農園/
-      req.body =~ /マサバ海峡大橋/
-      req.body =~ /57\.0\%/
-      req.body =~ /61\.8\%/
-      req.body =~ /59\.0\%/
-      req.body =~ /55\.7\%/
-      req.body =~ /マツキヨ/
+      req.body =~ /マツキヨ/ &&
+        req.body =~ /stat\.ink/
+    end
+
+    example_data.gsub!(/Hello, BOT API Server\!/, 'matsumoto')
+
+    assert_no_difference('User.count') do
+      post :callback, JSON.parse(example_data)
+    end
+    assert_response :success
+    assert_requested(:post, 'https://trialbot-api.line.me/v1/events',
+                     headers: { 'Content-Type' => 'application/json; charset=UTF-8' },
+                     times: 1) do |req|
+      req.body =~ /matsumoto/
+    end
+
+    assert_no_difference('User.count') do
+      post :callback, JSON.parse(example_data)
+    end
+
+    assert_response :success
+    assert_requested(:post, 'https://trialbot-api.line.me/v1/events',
+                     headers: { 'Content-Type' => 'application/json; charset=UTF-8' },
+                     times: 1) do |req|
+      req.body =~ /ヒラメが丘団地/ &&
+        req.body =~ /ホッケふ頭/ &&
+        req.body =~ /ナワバリバトル/ &&
+        req.body =~ /ガチホコ/ &&
+        req.body =~ /モズク農園/ &&
+        req.body =~ /マサバ海峡大橋/ &&
+        req.body =~ /57\.0\%/ &&
+        req.body =~ /61\.8\%/ &&
+        req.body =~ /59\.0\%/ &&
+        req.body =~ /55\.7\%/ &&
+        req.body =~ /マツキヨ/
     end
   end
 

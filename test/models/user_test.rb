@@ -13,4 +13,9 @@ class UserTest < ActiveSupport::TestCase
     @user.line_uid = ''
     assert_not @user.valid?
   end
+
+  test 'line_message_state must enum' do
+    assert_raise(ArgumentError) { @user.line_message_state = :not }
+    @user.line_message_state = :initial # no error should raised
+  end
 end

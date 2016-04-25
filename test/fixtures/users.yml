@@ -3,6 +3,8 @@
 sample1:
   line_uid: "uff2aec188e58752ee1fb0f9507c6529a"
   line_name: "サンプル"
+  stat_ink_id: "matsumoto"
+  line_message_state: <%= User.line_message_states[:normal] %>
 
 sample2:
   line_uid: "u2ddf2eb3c959e561f6c9fa2ea732e7eb9"

@@ -3,4 +3,8 @@ class User < ActiveRecord::Base
 
   enum line_message_state: { initial: 0,
                              recieving_statink_id: 1, normal: 99 }
+
+  def to_param
+    line_uid
+  end
 end

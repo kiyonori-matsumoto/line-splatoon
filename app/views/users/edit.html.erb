@@ -1,0 +1,10 @@
+<h1>Users Profile Edit</h1>
+<%= form_for(@user) do |f| %>
+  <%= f.label :line_name %>
+  <%= f.text_field :line_name, class: 'form-control' %>
+
+  <%= f.label :stat_ink_id %>
+  <%= f.text_field :stat_ink_id, class: 'form-control' %>
+
+  <%= f.submit "Save", class: "btn btn-primary" %>
+<% end %>

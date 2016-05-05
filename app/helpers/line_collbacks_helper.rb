@@ -18,7 +18,7 @@ module LineCollbacksHelper
     toChannel: 1_383_378_250,
     eventType: '138311608800106203',
     content: {
-      content_type: 1,
+      contentType: 1,
       toType: 1,
       text: ''
     }

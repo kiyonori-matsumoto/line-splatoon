@@ -39,9 +39,23 @@ class LineCollbacksControllerTest < ActionController::TestCase
         "to":["u0a556cffd4da0dd89c94fb36e36e1cdc"],
         "toType":1,
         "contentMetadata":null,
-        "text":"Hello, BOT API Server!"
+        "text":"設定"
       }
     }]}'
+
+    assert_no_difference('User.count') do
+      post :callback, JSON.parse(example_data)
+    end
+
+    assert_response :success
+    assert_requested(:post, 'https://trialbot-api.line.me/v1/events',
+                     headers: { 'Content-Type' => 'application/json; charset=UTF-8' },
+                     times: 1) do |req|
+      req.body =~ /uff2aec188e58752ee1fb0f9507c6529a/
+    end
+
+    example_data.gsub!(/設定/, 'stage')
+
     assert_no_difference('User.count') do
       post :callback, JSON.parse(example_data)
     end

@@ -9,6 +9,7 @@ module LineCollbacksHelper
   SCHEDULE_URI = 'http://splatapi.ovh/schedule_jp.json'.freeze
   STAT_INK_URI = 'https://stat.ink/u/'.freeze
   STAT_INK_BYMAP = '/stat/by-map'.freeze
+  USERS_URI = 'https://line-splatoon.herokuapp.com/users'.freeze
 
   Message = Struct.new(:to, :text)
 

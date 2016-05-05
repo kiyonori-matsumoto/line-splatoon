@@ -31,8 +31,8 @@ class LineCollbacksController < ApplicationController
                             line_message_state: :initial)
       end
 
-      parse_message(msg['content']['text'])
-      string = create_message
+      state = parse_message(msg['content']['text'])
+      string = create_message(state)
       msg = Message.new
       msg.to = line_uid
       msg.text = string
@@ -43,18 +43,22 @@ class LineCollbacksController < ApplicationController
 
   private
 
-  def create_message
+  def create_message(state = nil)
     if @user.normal?
-      get_status(@user.line_uid)
-      mp = method(:map_func)
-      regular_stages = @regular_stages.map(&mp)
-      rank_stages    = @rank_stages.map(&mp)
+      if state == :setting
+        return USERS_URI + '/' + @user.line_uid
+      else
+        get_status(@user.line_uid)
+        mp = method(:map_func)
+        regular_stages = @regular_stages.map(&mp)
+        rank_stages    = @rank_stages.map(&mp)
 
-      string = "#{@user.line_name}さんのステータス\n"
+        string = "#{@user.line_name}さんのステータス\n"
 
-      string << "ナワバリバトル:\n #{regular_stages[0][0]}:勝率 #{'%0.1f' % regular_stages[0][1]}%\n #{regular_stages[1][0]}:勝率 #{'%0.1f' % regular_stages[1][1]}%\n" \
-      "#{@rank_mode}:\n #{rank_stages[0][0]}: 勝率 #{'%0.1f' % rank_stages[0][1]}%\n #{rank_stages[1][0]}: 勝率 #{'%0.1f' % rank_stages[1][1]}%"
-      return string
+        string << "ナワバリバトル:\n #{regular_stages[0][0]}:勝率 #{'%0.1f' % regular_stages[0][1]}%\n #{regular_stages[1][0]}:勝率 #{'%0.1f' % regular_stages[1][1]}%\n" \
+        "#{@rank_mode}:\n #{rank_stages[0][0]}: 勝率 #{'%0.1f' % rank_stages[0][1]}%\n #{rank_stages[1][0]}: 勝率 #{'%0.1f' % rank_stages[1][1]}%"
+        return string
+      end
     elsif @user.initial?
       @user.update_attribute(:line_message_state, :recieving_statink_id)
       return "はじめまして！#{@user.line_name}さん!\nstat.inkのユーザIDを教えてほしいな！"
@@ -70,7 +74,13 @@ class LineCollbacksController < ApplicationController
     if @user.recieving_statink_id?
       @user.update_attribute(:stat_ink_id, content)
       @user.reload
+    else
+      case content
+      when /設定/
+        return :setting
+      end
     end
+    nil
   end
 
   def get_stages(mode)

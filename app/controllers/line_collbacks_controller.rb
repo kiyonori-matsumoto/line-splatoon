@@ -6,14 +6,7 @@ require 'nokogiri'
 class LineCollbacksController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
-  LINE_EVENT = 'https://trialbot-api.line.me/v1/events'.freeze
-  LINE_PROFILE = 'https://trialbot-api.line.me/v1/profiles'.freeze
-  AUTH_HASH = { 'X-Line-ChannelID' => ENV['LINE_CHANNEL_ID'],
-                'X-Line-ChannelSecret' => ENV['LINE_CHANNEL_SECRET'],
-                'X-Line-Trusted-User-With-ACL' => ENV['LINE_CHANNEL_MID'] }.freeze
-  SCHEDULE_URI = 'http://splatapi.ovh/schedule_jp.json'.freeze
-  STAT_INK_URI = 'https://stat.ink/u/'.freeze
-  STAT_INK_BYMAP = '/stat/by-map'.freeze
+  include LineCollbacksHelper
 
   def callback
     @stage_json = nil
@@ -40,24 +33,10 @@ class LineCollbacksController < ApplicationController
 
       parse_message(msg['content']['text'])
       string = create_message
-
-      request_content = {
-        to: [msg['content']['from']],
-        toChannel: 1_383_378_250, # fixed valule
-        eventType: '138311608800106203',
-        content: msg['content']
-      }
-
-      request_content[:content][:text] = string
-
-      endpoint_uri = LINE_EVENT
-      content_json = request_content.to_json
-
-      RestClient.post(endpoint_uri, content_json,
-                      'Content-Type' => 'application/json; charset=UTF-8',
-                      'X-Line-ChannelID' => ENV['LINE_CHANNEL_ID'],
-                      'X-Line-ChannelSecret' => ENV['LINE_CHANNEL_SECRET'],
-                      'X-Line-Trusted-User-With-ACL' => ENV['LINE_CHANNEL_MID'])
+      msg = Message.new
+      msg.to = line_uid
+      msg.text = string
+      send_message(msg)
     end
     render text: 'OK'
   end
